@@ -1,0 +1,8 @@
+__pychache__/
+*log
+temp/
+instance/
+.webassets-cache
+*.pyc
+.venv/*
+

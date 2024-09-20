@@ -8,7 +8,7 @@
     <style>
         /* Custom colors */
         .hero {
-            background-color: #454551;
+            background-color: #74747a;
             color: #383131;
         }
         .section-title {
@@ -28,6 +28,49 @@
             padding: 10px;
             border-radius: 5px;
         }
+        /* Style the form */
+        .content form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Style the input fields */
+        .content input, .content textarea {
+            width: 25%;
+            padding: 0.5rem;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .content textarea {
+            width: 50%;
+            padding: 0.5rem;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        /* Larger comment section */
+        .content textarea {
+            min-height: 10em; /* Larger height for comment box */
+            resize: vertical; /* Allow resizing vertically */
+        }
+
+        /* Style the submit button */
+        input[type="submit"] {
+            padding: 0.75rem;
+            background-color: #377ba8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #285f7d;
+        }
+
     </style>
 </head>
 <body>
@@ -131,7 +174,7 @@
                         <label for="email">Email</label>
                         <input name="email" required>
                         <label for="comment">Comment</label>
-                        <input type="comment" name="comment" required>
+                        <textarea name="comment" required></textarea>
                         <input type="submit" value="Register">
                     </form>
                 {% endblock %}

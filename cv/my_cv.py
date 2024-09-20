@@ -36,6 +36,3 @@ def index():
         flash(error)
 
     return render_template('index.html')
-
-
-    return render_template('my_cv/index.html')

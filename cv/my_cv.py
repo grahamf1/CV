@@ -1,8 +1,7 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request
 )
-from werkzeug.exceptions import abort
-from cv.db import get_db
+from .db import add_comment
 
 bp = Blueprint('my_cv', __name__)
 
@@ -12,7 +11,6 @@ def index():
         name = request.form['name']
         email = request.form['email']
         comment = request.form['comment']
-        db = get_db()
         error = None
 
         if not name:
@@ -24,15 +22,12 @@ def index():
 
         if error is None:
             try:
-                db.execute(
-                    'INSERT INTO feedback (name, email, comment) VALUES (?, ?, ?)',
-                    (name, email, comment)
-                )
-                db.commit()
+                add_comment(name, email, comment)
                 flash('Comment added successfully.')
-            except:
-                error = "There was an issue submitting your comment."
-        
-        flash(error)
+            except Exception as e:
+                error = f"There was an issue submitting your comment: {str(e)}"
 
+        if error:
+            flash(error)
+                
     return render_template('index.html')

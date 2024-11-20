@@ -1,36 +1,20 @@
-import sqlite3
-import click
-from flask import current_app, g
+from azure.cosmosdb.table import TableService, Entity
+the_connection_string = "DefaultEndpointsProtocol=https;AccountName=<Account Name>;AccountKey=<Account Key>;TableEndpoint=<Table Endpoint>/;"
+table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connection_string=the_connection_string)
 
-def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
+table_name = 'comments'
+table_service.create_table(table_name)
 
-    return g.db
+def add_comment(name, email, comment):
+    
+    entity = Entity()
+    entity.PartitionKey = 'comments'
+    entity.RowKey = f"{name}_{email}"
+    entity.name = name
+    entity.email = email
+    entity.comment = comment
+    table_service.insert_entity(table_name, entity)
 
-def close_db(e=None):
-    db = g.pop('db', None)
-
-    if db is not None:
-        db.close()
-
-def init_db():
-    db = get_db()
-
-    with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
-
-
-@click.command('init-db')
-def init_db_command():
-    # Clear the existing data and create new tables
-    init_db()
-    click.echo('Initialed database')
-
-def init_app(app):
-    app.teardown_appcontext(close_db)
-    app.cli.add_command(init_db_command)
+def get_all_comments():
+    comments = table_service.query_entities(table_name, filter="PartitionKey eq 'comments'")
+    return [{'name': entity.name, 'email': entity.email, 'comment': entity.comment} for entity in comments]

@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request
+    Blueprint, flash, render_template, request
 )
 from .db import add_comment
 

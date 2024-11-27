@@ -1,5 +1,5 @@
 from azure.cosmosdb.table import TableService, Entity
-the_connection_string = "DefaultEndpointsProtocol=https;AccountName=<Account Name>;AccountKey=<Account Key>;TableEndpoint=<Table Endpoint>/;"
+the_connection_string = ""
 table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connection_string=the_connection_string)
 
 table_name = 'comments'

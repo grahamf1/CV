@@ -1,6 +1,7 @@
 import os
 from azure.cosmosdb.table import TableService, Entity
-the_connection_string = os.environ.get['AZURE_COSMOS_CONNECTION_STRING']
+
+the_connection_string = os.environ.get('AZURE_COSMOS_CONNECTION_STRING')
 if not the_connection_string:
     raise ValueError("AZURE_COSMOS_CONNECTION_STRING environment variable is not set")
 

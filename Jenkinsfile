@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         COSMOS_DB_CONNECTION_STRING = ''
+    }
     
     stages {
         stage('Get CosmosDB Connection String') {
@@ -14,7 +15,7 @@ pipeline {
                             string(defaultValue: '', description: 'CosmosDB Connection String', name: 'COSMOS_DB_CONNECTION_STRING')
                         ]
                     )
-                    env.COSMOS_DB_CONNECTION_STRING = userInput//+
+                    env.COSMOS_DB_CONNECTION_STRING = userInput
                 }
             }
         }

@@ -24,9 +24,7 @@ pipeline {
                 script {
                     echo 'Containerising the Flask app in Docker'
 
-                    sh 'docker build -t my_app .'
                     sh "docker build --build-arg COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' -t my_app ."
-                    sh 'docker run -d -p 5001:5001 my_app'
                     sh "docker run -d -p 5001:5001 -e COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' my_app"
                 }
             }

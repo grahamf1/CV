@@ -20,9 +20,11 @@ pipeline {
             }
         }
         stage('Verify Docker Access') {
-            sh 'sudo usermod -aG docker build'
-            sh 'sudo systemctl restart docker'
-            sh 'docker info'
+            steps {
+                sh 'sudo usermod -aG docker build'
+                sh 'sudo systemctl restart docker'
+                sh 'docker info'
+            }
         }
         stage('Containerise') {
             steps {

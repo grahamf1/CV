@@ -4,7 +4,7 @@ pipeline {
     environment {
         COSMOS_DB_CONNECTION_STRING = ''
     }
-    
+
     stages {
         stage('Get CosmosDB Connection String') {
             steps {
@@ -32,5 +32,4 @@ pipeline {
             }
         }
     }
-}
 }

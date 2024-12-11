@@ -21,8 +21,6 @@ pipeline {
         }
         stage('Verify Docker Access') {
             steps {
-                sh 'sudo usermod -aG docker build'
-                sh 'sudo systemctl restart docker'
                 sh 'docker info'
             }
         }

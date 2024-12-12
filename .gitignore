@@ -5,4 +5,5 @@ instance/
 .webassets-cache
 *.pyc
 .venv/*
-
+.pytest_cache
+instance

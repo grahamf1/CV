@@ -38,7 +38,7 @@ pipeline {
                     sh 'mkdir -p temp_tests'
                     sh 'cp -r tests/* temp_tests/'
                     sh '''
-                        apt install pytho3-venv
+                        apt install python3-venv
                         python3 -m venv venv
                         . venv/bin/activate
                         pip3 install no-cache-dir requirements.txt

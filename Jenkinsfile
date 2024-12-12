@@ -37,7 +37,7 @@ pipeline {
                     echo 'Running tests on Flask application'
                     sh 'mkdir -p temp_tests'
                     sh 'cp -r tests/* temp_tests/'
-                    sh 'pip install pytest requests'
+                    sh 'pip3 install pytest requests'
                     try {
                         sh '''
                             cd temp_tests

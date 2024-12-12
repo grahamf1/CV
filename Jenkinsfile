@@ -40,7 +40,7 @@ pipeline {
                     sh '''
                         python3 -m venv venv
                         . venv/bin/activate
-                        pip3 install no-cache-dir requirements.txt
+                        pip3 install -r requirements.txt
                         pip3 install pytest requests
                         export PATH=$PATH:$HOME/.local/bin
                         cd temp_tests

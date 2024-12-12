@@ -26,7 +26,7 @@ pipeline {
                 script {
                     echo 'Containerising the Flask app in Docker'
                     sh "docker build --build-arg COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' -t my_app ."
-                    sh "docker run -d -p 5001:5001 -e COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' my_app"
+                    sh "docker run -d -p 5000:5000 --name app_container -e COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' my_app"
                 }
             }
         }
@@ -38,12 +38,12 @@ pipeline {
                     sh '''
                         sleep 30
 
-                        if ! docker ps | grep -q my_app_container; then
+                        if ! docker ps | grep -q app_container; then
                             echo "Container is not running"
                             exit 1
                         fi
 
-                        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5001)
+                        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000)
                         if [ $response != "200" ]; then
                             echo "Application is not responding. HTTP status: $response"
                             exit 1
@@ -55,8 +55,8 @@ pipeline {
             }
             post {
                 always {
-                    sh 'docker stop my_app_container || true'
-                    sh 'docker rm my_app_container || true'
+                    sh 'docker stop app_container || true'
+                    sh 'docker rm app_container || true'
                 }
             }
         }

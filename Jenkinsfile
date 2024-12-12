@@ -36,6 +36,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running tests on Flask application'
+                }
             }
         }
     }

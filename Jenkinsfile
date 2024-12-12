@@ -34,26 +34,29 @@ pipeline {
             agent { label 'Jenkins'}
             steps {
                 script {
-                    echo 'Running tests on Flask application'
-                    sh 'mkdir -p temp_tests'
-                    sh 'cp -r tests/* temp_tests/'
+                   echo 'Testing Docker container'
                     sh '''
-                        python3 -m venv venv
-                        . venv/bin/activate
-                        pip3 install -r requirements.txt
-                        pip3 install pytest requests
-                        export PATH=$PATH:$HOME/.local/bin
-                        cd temp_tests
-                        pytest test_app.py -v  
+                        sleep 30
+
+                        if ! docker ps | grep -q my_app_container; then
+                            echo "Container is not running"
+                            exit 1
+                        fi
+
+                        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5001)
+                        if [ $response != "200" ]; then
+                            echo "Application is not responding. HTTP status: $response"
+                            exit 1
+                        fi
+
+                        echo "Container test passed successfully"
                     '''
                 }
             }
             post {
                 always {
-                    sh '''
-                        deactivate || true
-                        rm -rf temp_tests venv
-                    '''
+                    sh 'docker stop my_app_container || true'
+                    sh 'docker rm my_app_container || true'
                 }
             }
         }

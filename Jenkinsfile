@@ -1,5 +1,5 @@
 pipeline {
-    agent None
+    agent none
 
     environment {
         COSMOS_DB_CONNECTION_STRING = ''
@@ -31,12 +31,11 @@ pipeline {
                 }
             }
         }
-    }
-    stage('Test') {
-        agent { label 'Test'}
-        steps {
-            script {
-                echo 'Running tests on Flask application'
+        stage('Test') {
+            agent { label 'Test'}
+            steps {
+                script {
+                    echo 'Running tests on Flask application'
             }
         }
     }

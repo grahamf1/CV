@@ -39,8 +39,6 @@ pipeline {
                     sh 'cp -r tests/* temp_tests/'
                     sh 'pip install pytest requests'
                     sh '''
-                        python3 -m venv venv
-                        . venv/bin/activate
                         pip3 install pytest requests
                         export PATH=$PATH:$HOME/.local/bin
                         cd temp_tests
@@ -51,7 +49,6 @@ pipeline {
             post {
                 always {
                     sh '''
-                        deactivate || true
                         rm -rf temp_tests venv
                     '''
                 }

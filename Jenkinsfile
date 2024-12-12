@@ -38,7 +38,8 @@ pipeline {
                     sh '''
                         sleep 30
 
-                        if ! docker ps | grep -q app_container; then
+                        if ! docker ps | grep -q app_container 
+                        then
                             echo "Container is not running"
                             exit 1
                         fi

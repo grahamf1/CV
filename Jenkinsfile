@@ -54,6 +54,7 @@ pipeline {
                         deactivate || true
                         rm -rf temp_tests venv
                     '''
+                }
             }
         }
     }

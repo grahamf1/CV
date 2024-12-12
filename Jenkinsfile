@@ -37,16 +37,23 @@ pipeline {
                     echo 'Running tests on Flask application'
                     sh 'mkdir -p temp_tests'
                     sh 'cp -r tests/* temp_tests/'
-                    sh 'pip3 install pytest requests'
-                    try {
-                        sh '''
-                            cd temp_tests
-                            pytest test_app.py
-                        '''
-                    } finally {
-                        sh 'rm -rf temp_tests'
-                    }
+                    sh 'pip install pytest requests'
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip3 install pytest requests
+                        export PATH=$PATH:$HOME/.local/bin
+                        cd temp_tests
+                        pytest test_app.py -v  
+                    '''
                 }
+            }
+            post {
+                always {
+                    sh '''
+                        deactivate || true
+                        rm -rf temp_tests venv
+                    '''
             }
         }
     }

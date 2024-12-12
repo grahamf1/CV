@@ -38,7 +38,9 @@ pipeline {
                     sh 'mkdir -p temp_tests'
                     sh 'cp -r tests/* temp_tests/'
                     sh '''
-                        pip3 install flask 
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip3 install no-cache-dir requirements.txt
                         pip3 install pytest requests
                         export PATH=$PATH:$HOME/.local/bin
                         cd temp_tests
@@ -49,6 +51,7 @@ pipeline {
             post {
                 always {
                     sh '''
+                        deactivate || true
                         rm -rf temp_tests venv
                     '''
                 }

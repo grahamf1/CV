@@ -16,8 +16,8 @@ pipeline {
                             string(defaultValue: '', description: 'CosmosDB Connection String', name: 'COSMOS_DB_CONNECTION_STRING')
                         ]
                     )
-                    env.COSMOS_DB_CONNECTION_STRING = userInput
                     sh 'env | grep COSMOS_DB_CONNECTION_STRING'
+                    env.COSMOS_DB_CONNECTION_STRING = userInput
                 }
             }
         }

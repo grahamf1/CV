@@ -16,8 +16,10 @@ pipeline {
                             string(defaultValue: '', description: 'CosmosDB Connection String', name: 'COSMOS_DB_CONNECTION_STRING')
                         ]
                     )
-                    sh 'env | grep COSMOS_DB_CONNECTION_STRING'
                     env.COSMOS_DB_CONNECTION_STRING = userInput
+                    writeFile file: 'cosmos_db_connection.txt', text: env.COSMOS_DB_CONNECTION_STRING
+                    sh 'echo "COSMOS_DB_CONNECTION_STRING: ${COSMOS_DB_CONNECTION_STRING}"'
+                    sh 'cat cosmos_db_connection.txt'
                 }
             }
         }

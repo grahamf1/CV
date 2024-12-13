@@ -7,3 +7,4 @@ instance/
 .venv/*
 .pytest_cache
 instance
+build.log

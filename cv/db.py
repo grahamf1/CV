@@ -2,11 +2,16 @@ import os
 from azure.cosmosdb.table import TableService, Entity
 
 the_connection_string = os.environ.get('AZURE_COSMOS_CONNECTION_STRING')
+print(f"Connection string: {the_connection_string}")
 if not the_connection_string:
     raise ValueError("AZURE_COSMOS_CONNECTION_STRING environment variable is not set")
 
-table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connection_string=the_connection_string)
-
+try:
+    table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connection_string=the_connection_string)
+    print("TableService created successfully.")
+except Exception as e:
+    print(f"Error creating TableService: {str(e)}")
+    
 table_name = 'comments'
 table_service.create_table(table_name)
 

@@ -17,9 +17,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import my_cv
-    app.register_blueprint(my_cv.bp)
-    app.add_url_rule('/', endpoint='index')
+    try:
+        from . import my_cv
+        app.register_blueprint(my_cv.bp)
+        app.add_url_rule('/', endpoint='index')
+    except Exception as e:
+        print(f"Error registering blueprint: {str(e)}")
+        raise
 
     return app
 

@@ -25,8 +25,17 @@ pipeline {
             steps {
                 script {
                     echo 'Containerising the Flask app in Docker'
-                    sh "docker build --build-arg COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' -t my_app ."
-                    sh "docker run -d -p 5000:5000 --name app_container -e COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' my_app"
+                    try {
+                        sh """
+                            set -x
+                            docker build --build-arg COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' -t cv_app . 2>&1 | tee build.log
+                            docker run -d -p 5000:5000 --name app_container -e COSMOS_DB_CONNECTION_STRING='${env.COSMOS_DB_CONNECTION_STRING}' cv_app
+                            """
+                    } catch (Exception e) {
+                        echo "Docker build failed. Error: ${e.getMessage()}"
+                        sh 'cat build.log'
+                        error "Docker build failed"
+                    }
                 }
             }
         }

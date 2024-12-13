@@ -31,7 +31,7 @@ pipeline {
                             echo "Connection string: ${env.COSMOS_DB_CONNECTION_STRING}"
                             docker build --build-arg COSMOS_DB_CONNECTION_STRING="${env.COSMOS_DB_CONNECTION_STRING}" -t cv_app . 2>&1 | tee build.log
                             sleep 30
-                            docker run -d -p 5000:5000 --name app_container cv_app
+                            docker run -d -p 5000:5000 --name app_container -e COSMOS_DB_CONNECTION_STRING="${env.COSMOS_DB_CONNECTION_STRING}" cv_app --entrypoint "/bin/sh" cv_app -c "python -m flask run --host=0.0.0.0 || sleep infinity"
                         """
                     } catch (Exception e) {
                         echo "Docker build failed. Error: ${e.getMessage()}"
@@ -48,6 +48,9 @@ pipeline {
                    echo 'Testing Docker container'
                     sh '''
                         sleep 30
+
+                        echo "Docker container logs:"
+                        docker logs app_container
 
                         if ! docker ps | grep -q app_container 
                         then

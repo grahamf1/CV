@@ -2,27 +2,10 @@ pipeline {
     agent none
 
     environment {
-        COSMOS_DB_CONNECTION_STRING = ''
+        COSMOS_DB_CONNECTION_STRING = credentials('cosmos-db-connection-string')
     }
 
     stages {
-        stage('Get CosmosDB Connection String') {
-            agent { label 'Jenkins'}
-            steps {
-                script {
-                    def userInput = input(
-                        id: 'userInput', message: 'Please enter the CosmosDB connection string:',
-                        parameters: [
-                            string(defaultValue: '', description: 'CosmosDB Connection String', name: 'COSMOS_DB_CONNECTION_STRING')
-                        ]
-                    )
-                    env.COSMOS_DB_CONNECTION_STRING = userInput
-                    writeFile file: 'cosmos_db_connection.txt', text: env.COSMOS_DB_CONNECTION_STRING
-                    sh 'echo "COSMOS_DB_CONNECTION_STRING: ${COSMOS_DB_CONNECTION_STRING}"'
-                    sh 'cat cosmos_db_connection.txt'
-                }
-            }
-        }
         stage('Containerise') {
             agent {label 'Jenkins'}
             steps {
@@ -31,9 +14,8 @@ pipeline {
                     try {
                         sh """
                             set -x
-                            echo "Connection string: ${env.COSMOS_DB_CONNECTION_STRING}"
-                            docker build --build-arg COSMOS_DB_CONNECTION_STRING="${env.COSMOS_DB_CONNECTION_STRING}" -t cv_app . 
-                            docker run -d -p 5000:5000 --name app_container cv_app
+                            docker build -t cv_app . 
+                            docker run -d -p 5000:5000 --name app_container -e AZURE_COSMOS_CONNECTION_STRING="\${COSMOS_DB_CONNECTION_STRING}" cv_app
                         """
                     } catch (Exception e) {
                         echo "Docker build failed. Error: ${e.getMessage()}"

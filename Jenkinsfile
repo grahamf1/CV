@@ -17,6 +17,7 @@ pipeline {
                         ]
                     )
                     env.COSMOS_DB_CONNECTION_STRING = userInput
+                    sh 'env | grep COSMOS_DB_CONNECTION_STRING'
                 }
             }
         }
@@ -30,7 +31,6 @@ pipeline {
                             set -x
                             echo "Connection string: ${env.COSMOS_DB_CONNECTION_STRING}"
                             docker build --build-arg COSMOS_DB_CONNECTION_STRING="${env.COSMOS_DB_CONNECTION_STRING}" -t cv_app . 
-                            sleep 300
                             docker run -d -p 5000:5000 --name app_container cv_app
                         """
                     } catch (Exception e) {

@@ -34,11 +34,6 @@ pipeline {
                 script {
                    echo 'Testing Docker container'
                     sh '''
-                        sleep 30
-
-                        echo "Docker container logs:"
-                        docker logs app_container
-
                         if ! docker ps | grep -q app_container 
                         then
                             echo "Container is not running"
@@ -68,7 +63,7 @@ pipeline {
                 script {
                    echo 'Deploying Docker container'
                     sh '''
-                        docker login {CONTAINER_REGISTRY}.azurecr.io --username ${ACR_ADMIN_USERNAME} --password-stdin <<< ${ACR_ADMIN_PASSWORD}
+                        docker login ${CONTAINER_REGISTRY}.azurecr.io --username ${ACR_ADMIN_USERNAME} --password-stdin <<< ${ACR_ADMIN_PASSWORD}
                         
                         # docker tag ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
                         # docker push ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app

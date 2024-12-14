@@ -68,7 +68,7 @@ pipeline {
                 script {
                    echo 'Testing Docker container'
                     sh '''
-                        echo ${ACR_ADMIN_PASSWORD} | docker login ${CONTAINER_REGISTRY}.azurecr.io -u ${ACR_ADMIN_USERNAME} --password-stdin
+                        docker login {CONTAINER_REGISTRY}.azurecr.io --username ${ACR_ADMIN_USERNAME} --password-stdin <<< ${ACR_ADMIN_PASSWORD}
 
                         docker tag ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
                         docker push ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app

@@ -66,14 +66,14 @@ pipeline {
             agent { label 'agent-1'}
             steps {
                 script {
-                   echo 'Testing Docker container'
+                   echo 'Deploying Docker container'
                     sh '''
                         docker login {CONTAINER_REGISTRY}.azurecr.io --username ${ACR_ADMIN_USERNAME} --password-stdin <<< ${ACR_ADMIN_PASSWORD}
+                        
+                        # docker tag ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
+                        # docker push ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
 
-                        docker tag ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
-                        docker push ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
-
-                        docker logout ${CONTAINER_REGISTRY}.azurecr.io
+                        # docker logout ${CONTAINER_REGISTRY}.azurecr.io
                         
                         echo "Container pushed to registry successfully"
                     '''

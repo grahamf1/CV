@@ -3,14 +3,17 @@ pipeline {
 
     environment {
         COSMOS_DB_CONNECTION_STRING = credentials('cosmos-db-connection-string')
+        CONTAINER_REGISTRY = credentials('container-registry')
+        ACR_ADMIN_USERNAME = credentials('acr-admin-username')
+        ACR_ADMIN_PASSWORD = credentials('acr-admin-password')
     }
 
     stages {
-        stage('Containerise') {
-            agent {label 'Jenkins'}
+        stage('Build') {
+            agent {label 'agent-1'}
             steps {
                 script {
-                    echo 'Containerising the Flask app in Docker'
+                    echo 'Building the Flask app in Docker'
                     try {
                         sh """
                             set -x
@@ -26,7 +29,7 @@ pipeline {
             }
         }
         stage('Test') {
-            agent { label 'Jenkins'}
+            agent { label 'agent-1'}
             steps {
                 script {
                    echo 'Testing Docker container'
@@ -54,8 +57,26 @@ pipeline {
             }
             post {
                 always {
-                    sh 'docker stop app_container || true'
-                    sh 'docker rm app_container || true'
+                    sh 'docker stop app_container'
+                    sh 'docker rm app_container'
+                }
+            }
+        }
+         stage('Deploy') {
+            agent { label 'agent-1'}
+            steps {
+                script {
+                   echo 'Testing Docker container'
+                    sh '''
+                        echo ${ACR_ADMIN_PASSWORD} | docker login ${CONTAINER_REGISTRY}.azurecr.io -u ${ACR_ADMIN_USERNAME} --password-stdin
+
+                        docker tag ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
+                        docker push ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
+
+                        docker logout ${CONTAINER_REGISTRY}.azurecr.io
+                        
+                        echo "Container pushed to registry successfully"
+                    '''
                 }
             }
         }

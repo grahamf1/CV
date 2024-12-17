@@ -57,23 +57,21 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+         stage('Deploy') {
             agent { label 'agent-1'}
             steps {
                 script {
-                    echo 'Deploying Docker container'
-                    withCredentials([usernamePassword(credentialsId: 'acr-credentials', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
+                   echo 'Deploying Docker container'
                     sh '''
                         set -x
                         echo "Attempting to log in to ${CONTAINER_REGISTRY}"
-                        echo "${ACR_PASSWORD}" | docker login ${CONTAINER_REGISTRY} --username ${ACR_USERNAME} --password-stdin
-                        if [ $? -ne 0 ]; then
+                        if ! docker login ${CONTAINER_REGISTRY} --username ${ACR_ADMIN_USERNAME} --password-stdin <<< ${ACR_ADMIN_PASSWORD}; then
                             echo "Docker login failed"
                             docker info
                             exit 1
                         fi
                         echo "Docker login successful"
-
+                        
                         docker tag ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
                         docker push ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
 
@@ -81,7 +79,6 @@ pipeline {
                         
                         echo "Container pushed to registry successfully"
                     '''
-                    }   
                 }
             }
         }

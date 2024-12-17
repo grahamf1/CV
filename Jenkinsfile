@@ -63,8 +63,15 @@ pipeline {
                 script {
                    echo 'Deploying Docker container'
                     sh '''
-                        docker login ${CONTAINER_REGISTRY} --username ${ACR_ADMIN_USERNAME} --password-stdin <<< ${ACR_ADMIN_PASSWORD}
-                        echo "$?"
+                        set -x
+                        echo "Attempting to log in to ${CONTAINER_REGISTRY}"
+                        if ! docker login ${CONTAINER_REGISTRY} --username ${ACR_ADMIN_USERNAME} --password-stdin <<< ${ACR_ADMIN_PASSWORD}; then
+                            echo "Docker login failed"
+                            docker info
+                            exit 1
+                        fi
+                        echo "Docker login successful"
+                        
                         docker tag ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
                         docker push ${CONTAINER_REGISTRY}.azurecr.io/deploy/cv_app
 
